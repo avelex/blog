@@ -1,0 +1,83 @@
+version: '3'
+services:
+# database
+  mongodb:
+    image: mongo:${MONGO_VERSION:-latest}
+    restart: on-failure
+    hostname: mongodb
+    ports:
+      - "27017:27017"
+    networks:
+      default:
+        aliases:
+          - mongodb
+    volumes:
+      - 'mongodbdb:/data/db'
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+# backend
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    restart: on-failure
+    hostname: ${HOST}
+    expose:
+      - "${PORT}"
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      default:
+        aliases:
+          - ${HOST}
+    environment:
+      HOST: ${HOST}
+      PORT: ${PORT}
+      MONGO_URI: ${MONGO_URI}
+    healthcheck:
+      test: curl --fail http://${HOST}:${PORT}/status || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+  proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile.proxy
+    volumes:
+      - type: bind
+        source: ./proxy/nginx.conf
+        target: /etc/nginx/conf.d/default.conf
+        read_only: true
+    environment:
+      BACKEND_HOST: ${HOST}
+      BACKEND_PORT: ${PORT}
+    ports:
+      - 443:443
+    depends_on: 
+      - backend
+
+
+
+networks:
+  default:
+    name: avelex-dairy
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.168.55.0/24
+          gateway: 172.168.55.1
+
+volumes:
+  mongodbdb: {}
+
+

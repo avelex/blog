@@ -1,0 +1,16 @@
+FROM golang:1.20 as builder
+
+WORKDIR /src/
+
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /build/app ./cmd/main.go
+
+FROM ubuntu:18.04
+
+WORKDIR /build/
+
+COPY --from=builder /build/app .
+COPY --from=builder /src/templates/ ./templates/
+
+CMD ["/build/app"]

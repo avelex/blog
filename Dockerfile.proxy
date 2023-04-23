@@ -1,0 +1,16 @@
+FROM golang:1.20 as builder
+
+WORKDIR /src/
+
+RUN apt-get update && \
+    apt-get install -y openssl
+    
+COPY generate-certificate.sh /tmp/generate-certificate.sh
+
+RUN chmod +x /tmp/generate-certificate.sh
+RUN /tmp/generate-certificate.sh
+
+FROM nginx
+
+COPY --from=builder /src/server.crt /etc/auth/
+COPY --from=builder /src/server.key /etc/auth/

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Post</title>
+</head>
+<body>
+{{if eq (len .) 0}}
+Nothing to see here
+{{end}}
+{{range .}}
+<div>
+    <a href="/post/{{.ID}}">{{.Title}}</a>
+</div>
+{{end}}
+</body>
+</html>
