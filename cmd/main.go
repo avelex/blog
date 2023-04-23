@@ -29,6 +29,7 @@ func main() {
 	logger.Debugf("app host: %v", config.Host)
 	logger.Debugf("app server port: %v", config.HttpPort)
 	logger.Debugf("insecure mode: %v", config.InsecureHTTP)
+	logger.Debugf("debug mode: %v", config.Debug)
 
 	ctx, cancel := signal.NotifyContext(context.Background(),
 		os.Interrupt,

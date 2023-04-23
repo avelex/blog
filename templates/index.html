@@ -2,16 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>All Post</title>
+    <title>Blog</title>
 </head>
 <body>
+<h1>Alex Gubin Blog</h1>
+
 {{if eq (len .) 0}}
 Nothing to see here
 {{end}}
-{{range .}}
+
+{{range $element := .}}
 <div>
-    <a href="/post/{{.ID}}">{{.Title}}</a>
+    <a href="/post/{{$element.ID}}">{{$element.Title}}</a>
 </div>
 {{end}}
+
 </body>
 </html>

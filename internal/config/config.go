@@ -10,7 +10,7 @@ import (
 
 type Config struct {
 	InsecureHTTP    bool
-	Debug           bool
+	Debug           bool          `env:"DEBUG" env-default:"false"`
 	HttpPort        string        `env:"PORT" env-default:"8080"`
 	Host            string        `env:"HOST" env-default:"localhost"`
 	MongoURI        string        `env:"MONGO_URI" env-default:"mongodb://localhost:27017"`

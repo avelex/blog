@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/gofiber/fiber/v2 v2.44.0
+	github.com/gofiber/template v1.8.1
 	github.com/ilyakaznacheev/cleanenv v1.4.2
 	go.mongodb.org/mongo-driver v1.11.4
 	go.uber.org/zap v1.24.0
@@ -12,7 +13,7 @@ require (
 require (
 	github.com/BurntSushi/toml v1.1.0 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/golang/snappy v0.0.1 // indirect
+	github.com/golang/snappy v0.0.3 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/klauspost/compress v1.16.3 // indirect

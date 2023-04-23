@@ -11,6 +11,7 @@ import (
 type BlogUsecase interface {
 	GetPosts(ctx context.Context) ([]entity.Post, error)
 	GetPost(ctx context.Context, id string) (entity.Post, error)
+	CreatePost(ctx context.Context) error
 }
 
 func NewRouter(router fiber.Router, blogUsecase BlogUsecase) {
@@ -20,4 +21,5 @@ func NewRouter(router fiber.Router, blogUsecase BlogUsecase) {
 
 	router.Get("/", h.showPosts)
 	router.Get("/post/:id", h.showPost)
+	router.Get("/create", h.createPost)
 }

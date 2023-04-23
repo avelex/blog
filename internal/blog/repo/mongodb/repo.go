@@ -5,6 +5,7 @@ import (
 
 	"github.com/avelex/blog/internal/blog/entity"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -17,8 +18,45 @@ func NewBlogRepository(database *mongo.Database) *blogRepository {
 }
 
 func (r *blogRepository) GetPost(ctx context.Context, id string) (entity.Post, error) {
-	return entity.Post{}, nil
+	filter := bson.D{{"id", id}}
+
+	var result entity.Post
+	err := r.col.FindOne(ctx, filter).Decode(&result)
+	if err != nil {
+		return entity.Post{}, err
+	}
+
+	return result, nil
 }
 func (r *blogRepository) GetPosts(ctx context.Context) ([]entity.Post, error) {
-	return nil, nil
+	cur, err := r.col.Find(ctx, bson.D{})
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]entity.Post, 0)
+
+	for cur.Next(ctx) {
+		var post entity.Post
+		if err := cur.Decode(&post); err != nil {
+			return nil, err
+		}
+
+		result = append(result, post)
+	}
+
+	if err := cur.Close(ctx); err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func (r *blogRepository) CreatePost(ctx context.Context, post entity.Post) error {
+	_, err := r.col.InsertOne(ctx, post)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
